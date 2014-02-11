@@ -1,3 +1,4 @@
+require 'sinatra'
 require 'data_mapper'
 
 env = ENV["RACK_ENV"] || "development"
@@ -10,4 +11,7 @@ DataMapper.finalize
 
 DataMapper.auto_upgrade!
 
-# dbtype://user:password@hostname:port/databasename
+get '/' do
+  @links = Link.all
+  erb :index
+end
