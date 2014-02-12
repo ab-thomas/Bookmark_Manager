@@ -3,18 +3,11 @@ require 'data_mapper'
 require './lib/link' # this needs to be done after datamapper is initialised
 require './lib/tag'
 require './lib/user'
-env = ENV["RACK_ENV"] || "development"
-# we're telling datamapper to use a postgres database on localhost. 
-# The name will be "bookmark_manager_test" or "bookmark_manager_development" 
-# depending on the environment
-DataMapper.setup(:default, "postgres://localhost/bookmark_manager_#{env}")
-# After declaring your models, you should finalise them
-DataMapper.finalize
-# However, how database tables don't exist yet. Let's tell datamapper to create them
-DataMapper.auto_upgrade!
+require_relative 'helpers/application'
+require_relative 'data_mapper_setup'
 
 enable :sessions
-set :session_secret, 'super secret'
+set :session_secret, 'super secret unique encryption key!'
 
 get '/' do
   @links = Link.all
@@ -51,19 +44,14 @@ end
 
 post '/users' do
   user = User.create(:email => params[:email],
-              :password => params[:password])
+              :password => params[:password],
+              :password_confirmation => params[:password_confirmation])
   # saving the user id in the session after it's created
   session[:user_id] = user.id
   redirect to('/')
 end
 
-# A helper will give us access to the current user if logged in 
-helpers do
 
-  def current_user
-    @current_user ||=User.get(session[:user_id]) if session[:user_id]
-  end
-end
 
 
 
