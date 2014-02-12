@@ -57,7 +57,7 @@ post '/users' do
     redirect to('/')
     # if it's not valid, we'll show the same form again
   else 
-    flash[:notice] = "Sorry, your passwords don't match"
+    flash.now[:errors] = @user.errors.full_messages
     erb :"users/new"
   end
 end
