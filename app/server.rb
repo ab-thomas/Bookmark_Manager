@@ -62,6 +62,10 @@ post '/users' do
   end
 end
 
+get '/sessions/new' do
+  erb :"sessions/new"
+end
+
 
 
 
